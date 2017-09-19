@@ -15,6 +15,8 @@ The goal is to figure out if a filename from the large (30G entries) data set is
 * 01.a47c00c79f2c.txt
 
 
+A good starting point https://github.com/dwyl/english-words
+
 Example
 
            ./detect_random.py -m model.pki -d sample_data.txt   
