@@ -19,5 +19,5 @@ A good starting point https://github.com/dwyl/english-words
 
 Example
 
-           ./detect_random.py -m model.pki -d sample_data.txt   
+           wget -c https://github.com/dwyl/english-words/blob/master/words.txt\?raw\=true -O words.txt  && ./detect_random.py -d words.txt -m model.pki  
            ./detect_random.py -c 214A3s8s9s16r4t5t36t8t22  -m model.pki
