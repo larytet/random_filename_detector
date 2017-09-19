@@ -98,7 +98,7 @@ def train(logger, f):
 
 def check_and_print(logger, s):
     probability = avg_transition_prob(s, model_mat)
-    print probability
+    print (probability)
         
 def open_file(filename, flags):
     '''
