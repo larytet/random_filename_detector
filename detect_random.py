@@ -11,7 +11,7 @@ Train the system first by running the script with -d -m flags
  
 Usage:
   detect_random.py -h | --help
-  detect_random.py [-d <FILENAME>] [-o <PATH>] [-c <STR>]
+  detect_random.py [-d <FILENAME>] [-m <PATH>] [-c <STR>]
 
 Example:
     detect_random.py [-d training_data.txt] [-m model.pki]
@@ -29,17 +29,18 @@ from docopt import docopt
 import math
 import pickle
 
-global model_data
 global model_mat
-global threshold
 
 def init(model_data_filename):
-    global model_data
     global model_mat
-    global threshold
     model_data = pickle.load(open(model_data_filename, 'rb'))
-    model_data['mat']
-    model_data['thresh']
+    model_mat = model_data['mat']
+    model_accepted_chars = model_data['accepted_chars']
+    assert (model_accepted_chars == accepted_chars)
+
+def check(s, threshold):
+    probability = avg_transition_prob(s, model_mat)
+    return probability > threshold
 
 accepted_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-'
 
@@ -80,7 +81,7 @@ def train(logger, f):
     # from http://norvig.com/spell-correct.html
     for line in f:
         for a, b in ngram(2, line):
-            counts[pos[a]][pos[b]] += 1
+            counts [pos[a]]  [pos[b]] += 1
 
     # Normalize the counts so that they become log probabilities.  
     # We use log probabilities rather than straight probabilities to avoid
@@ -92,25 +93,12 @@ def train(logger, f):
         for j in xrange(len(row)):
             row[j] = math.log(row[j] / s)
 
-    # Find the probability of generating a few arbitrarily choosen good and
-    # bad phrases.
-    good_probs = [avg_transition_prob(l, counts) for l in open('good.txt')]
-    bad_probs = [avg_transition_prob(l, counts) for l in open('bad.txt')]
-
-    # Assert that we actually are capable of detecting the junk.
-    assert min(good_probs) > max(bad_probs)
-
-    # And pick a threshold halfway between the worst good and best bad inputs.
-    thresh = (min(good_probs) + max(bad_probs)) / 2
-    return counts, thresh
+    return counts
     
-def check(s):
-    probability = avg_transition_prob(s, model_mat)
-    return probability > threshold
 
 def check_and_print(logger, s):
     probability = avg_transition_prob(s, model_mat)
-    logger.info("{0}, probability {1}, threshold {2}",  probability > threshold, probability, threshold)
+    print probability
         
 def open_file(filename, flags):
     '''
@@ -137,10 +125,12 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)    
     
     data_filename = arguments['--data']
-    output_filename = arguments['--output']
+    output_filename = arguments['--model']
     check = arguments['--check']
         
         
+    data_file = None
+    output_file = None
     while True:
         if check is not None and output_filename is not None:
             init(output_filename)
@@ -149,6 +139,7 @@ if __name__ == '__main__':
         
         if data_filename is None or output_filename is None:
             logger.error("Both data and output filenames should be provided in the training mode")
+            break
         
         result, output_file = open_file(output_filename, "wb")
         if not result:
@@ -158,8 +149,8 @@ if __name__ == '__main__':
         if not result:
             logger.error("Failed to open {0} for reading".format(data_filename))
             break
-        counts, thresh = train(logger, data_file)
-        pickle.dump({'mat': counts, 'thresh': thresh}, output_file)
+        counts = train(logger, data_file)
+        pickle.dump({'mat': counts, 'accepted_chars': accepted_chars}, output_file)
         break;
     
     if output_file:  
