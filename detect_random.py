@@ -11,7 +11,7 @@ Train the system first by running the script with -d -m flags
  
 Usage:
   detect_random.py -h | --help
-  detect_random.py -d <FILENAME> -o <PATH>
+  detect_random.py [-d <FILENAME>] [-o <PATH>] [-c <STR>]
 
 Example:
     detect_random.py [-d training_data.txt] [-m model.pki]
@@ -139,11 +139,16 @@ if __name__ == '__main__':
     data_filename = arguments['--data']
     output_filename = arguments['--output']
     check = arguments['--check']
-    if check is not None:
-        init(output_filename)
-        check_and_print(logger, check)
+        
         
     while True:
+        if check is not None and output_filename is not None:
+            init(output_filename)
+            check_and_print(logger, check)
+            break
+        
+        if data_filename is None or output_filename is None:
+            logger.error("Both data and output filenames should be provided in the training mode")
         
         result, output_file = open_file(output_filename, "wb")
         if not result:
