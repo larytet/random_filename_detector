@@ -108,7 +108,7 @@ def open_file(filename, flags):
     try:
         fileHandle = open(filename, flags) 
     except Exception:
-        print sys.exc_info()
+        print(sys.exc_info())
         logger.error('Failed to open file {0}'.format(filename))
         return (False, None)
     else:
