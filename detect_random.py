@@ -75,7 +75,7 @@ def train(logger, f):
     # prior or smoothing factor.  This way, if we see a character transition
     # live that we've never observed in the past, we won't assume the entire
     # string has 0 probability.
-    counts = [[2 for i in xrange(k)] for i in xrange(k)]
+    counts = [[2 for i in range(k)] for i in range(k)]
 
     # Count transitions from big text file, taken 
     # from http://norvig.com/spell-correct.html
@@ -90,7 +90,7 @@ def train(logger, f):
     # http://squarecog.wordpress.com/2009/01/10/dealing-with-underflow-in-joint-probability-calculations/
     for i, row in enumerate(counts):
         s = float(sum(row))
-        for j in xrange(len(row)):
+        for j in range(len(row)):
             row[j] = math.log(row[j] / s)
 
     return counts
