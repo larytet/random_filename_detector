@@ -15,3 +15,6 @@ The goal is to figure out if a filename from the large (30G entries) data set is
 * 01.a47c00c79f2c.txt
 
 
+Example
+           ./detect_random.py -m model.pki -d sample_data.txt   
+           ./detect_random.py -c 214A3s8s9s16r4t5t36t8t22  -m model.pki
