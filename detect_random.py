@@ -42,7 +42,7 @@ def check(s, threshold):
     probability = avg_transition_prob(s, model_mat)
     return probability > threshold
 
-accepted_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ._-'
+accepted_chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
 
 pos = dict([(char, idx) for idx, char in enumerate(accepted_chars)])
 
